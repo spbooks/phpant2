@@ -1,0 +1,103 @@
+/* this is a print style sheet - no pixel measurements! */
+
+/* this sheet is used exclusively on the /print.php/ pages */
+
+div#dostuff, div#adz, div#tab div.product, #skip, #search, #col1, #col3, #adwrap, #crumbbox, #stats, #footer, #topcontrols, #dostuff, #news, #navcontainer,  .h3insert
+{
+  display: none;
+}
+#header{
+	position:relative;
+	border:1px dashed red;} 
+#tabbar
+{
+  height: 0;
+	width: 100%;
+	border: 0 none!important;
+	color:#FFFFFF;
+	background-color:#FFF;
+	margin:0!important
+}
+#tab p, #tab li
+{
+  font-family: Georgia, Times, "Times New Roman", serif;
+}
+.glossary {
+	position:relative;
+	color:#000000;
+	text-decoration:none
+	}
+	
+div#tab h1
+{
+
+  font-size:x-large;
+  margin-top:2em;
+  padding-bottom:.3em
+}
+div#tab h5
+{
+  border-bottom: 1px dotted #c0d0e0; 
+  font-size:medium;
+  margin-top:2em;
+  padding-bottom:.3em
+}
+div#bio {
+	width:25%;
+	padding:2%!important;
+	float:right;	
+	margin:3% 0 0 2%
+}
+div#bio h4, div#bio p {
+	margin:1em!important;
+}
+
+div#bio img{
+	float:left;
+	margin-right:1em;
+}
+div#bio p {
+	font-size:x-small
+}
+#header img
+{
+  position: static;
+	float: left;
+	margin: 0;
+	padding: 0 0 0.4cm 0.5cm;
+	border: none;
+}
+div#bio p, .crumb{
+	font-size:x-small
+}
+
+
+.boxes
+{
+  border: 1pt solid #c0d0e0;
+}
+#banner .tagline
+{
+  padding: 0.9cm 0.4cm 0.4cm 0;
+	margin: 0;
+	text-align: right;
+	border:1px dashed red;
+}
+
+.browserwarning
+{
+	display: none;
+}
+
+/* when viewed on-screen, add some padding and display browser warning */
+@media screen
+{
+	body
+	{
+		padding: 16px;
+	}
+	.browserwarning
+	{
+	  display: block;
+	}
+}

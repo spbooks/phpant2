@@ -1,0 +1,11 @@
+DROP PROCEDURE IF EXISTS getQuote;
+
+DELIMITER //
+CREATE PROCEDURE getQuote()
+BEGIN
+DECLARE outStr VARCHAR(45);
+SET outStr = "Out, damned spot!";
+SELECT outStr;
+END//
+
+DELIMITER ;

@@ -1,0 +1,223 @@
+body{ /* set the relative font size of IE5-5.5 differently to everything else, and we scale it from there */
+  background: #fff;
+  line-height: 1.1;
+  color: #666;
+  font: small Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+/*Global Whitespace Reset*/
+body, form, input {
+padding: 0;
+margin: 0;
+}
+/*
+form {
+display:inline
+} */
+/* setting form to inline messes up countless forms throughout the site in all
+ */
+
+h1, h2, h4, h5, h6, p, pre, blockquote, form, label, ul, ol, dl, fieldset, address {
+  margin:20px 0;
+}
+
+dd, blockquote {
+  margin-left: 40px;
+}
+fieldset {
+  padding:10px;
+}
+/* end : Global Whitespace Reset*/
+img {
+  border: 0px none #fff;
+}
+
+h2, h3{
+  color:#036;
+  background: transparent;
+  font-family:  'Trebuchet MS', Arial, Helvetica, sans-serif
+}
+h1  {
+  position:relative;
+  color:#036;
+  font: normal 2.0em Verdana, 'Trebuchet MS', Arial, Helvetica, sans-serif
+}
+h2  {
+  font-size:160%;
+  padding:0 0;
+  }
+
+h4  {
+  font:  bold 100% Verdana, Arial, Helvetica, sans-serif;
+}
+h5  {
+  font-size:  100%;
+}
+h6 {
+  font-weight: normal;
+}
+p, li {
+  line-height:150%
+}
+
+a:link{
+  color: #06c;
+  background: transparent;
+}
+a:visited{
+
+  color:#4B5970;
+  background: transparent;
+}
+a:hover{
+  color: #f60;
+  background: transparent;
+}
+
+acronym, abbr
+{
+	cursor: help;
+}
+
+address{
+  padding:1.5em!important;
+  font: italic bold small/1.4em  Verdana,Arial,Helvetica,sans-serif;
+  color: #036;
+  background: transparent;
+}
+blockquote{
+  font: bold 13px/1.4em  Verdana, Arial, Helvetica,sans-serif;
+  color: #036;
+  margin: 10px 0px 10px 20px;
+  background: transparent;
+}
+blockquote h6{
+  color: #036!important;
+  text-align: right;
+  background: transparent;
+}
+caption {
+  font-size: 12px;
+}
+dl{
+  margin-top: 10px;
+}
+dt {
+  font: bold 100%/1.4em  Verdana,Arial,Helvetica,sans-serif;
+}
+dd {
+  font: normal small/1.4em  Verdana,Arial,Helvetica,sans-serif;
+  color: #333 !important;
+  margin-bottom: 15px;
+  background: transparent;
+}
+td {
+  padding: 5px 10px;
+  vertical-align: top;
+}
+td a {
+  font-weight: bold;
+  color: #06c;
+}
+th {
+  font: 85% Verdana,Arial,Helvetica,sans-serif;
+  color: #666;
+  background: transparent;
+}
+
+/* Exempt table cells inside formatted code listings */
+.dp-highlighter td {
+  padding: 0;
+  vertical-align: baseline;
+}
+.dp-highlighter td.line1, .dp-highlighter td.line2 {
+  padding-left: 10px;
+}
+.dp-highlighter td a {
+  font-weight: inherit;
+}
+.dp-highlighter th {
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
+}
+
+p label {
+  width: 25%;
+  font-weight: bold;
+  float: left;
+  clear: left;
+}
+legend {
+  font: bold small/1.4em Verdana,Arial,Helvetica,sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+
+code {
+color: #900;
+background: #FFFFFF;
+font-size:115%!important;
+font-family:"Courier New", Courier, mono
+}
+
+
+.glossary {
+  text-decoration:none;
+  border-bottom: 1px dashed green;
+  }
+a.alert:link, a.alert {
+  color:#CC0033
+  }
+
+
+html>img /* autoscroll override for Firefox */
+{
+  width: 0!important;
+  height: 28px!important;
+  padding-left: 28px!important;
+  background: url(/images/icons/autoscroll2.png);
+}
+div.wrap div#aboutnav ul {
+list-style-position:inside;
+list-style:none;
+text-align:center;
+padding-left:0;
+padding-right:0;
+}
+div.wrap div#aboutnav ul li{
+list-style-position:inside;
+list-style:none;
+display:inline;
+padding:0 .5em 0 .15em;
+margin:0!important;
+font-size:x-small;
+border-right:1px #b0c0d0 solid;
+}
+
+/* catfish and 'position:fixed' emulation */
+#catfish {
+position: fixed;
+bottom: 0;
+z-index: 100;
+width:100%;
+vertical-align:top;
+overflow: hidden;
+}
+#catfish h6#goaway {
+float:right;
+text-align:right
+}
+.zip {
+height: 100%;
+overflow: auto;
+position: relative;
+z-index: 2;
+}
+body.zipped, html.zipped
+{
+margin: 0;
+padding: 0 0 0 0;
+height: 100%;
+overflow: hidden;
+}
